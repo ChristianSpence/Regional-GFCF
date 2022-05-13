@@ -17,5 +17,3 @@ gfcf_final <- lapply(gfcf, function(x) {
     rename(geog_name = 2, geog_code = 3)
 }) |>
   bind_rows()
-
-write_csv(gfcf_final, "C:/Users/55130748/Desktop/gfcf.csv")
