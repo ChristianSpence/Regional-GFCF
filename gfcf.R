@@ -1,7 +1,7 @@
 library(readxl)
 library(tidyverse)
 
-gfcf_path <- "C:/Users/55130748/Desktop/experimentalregionalgfcf19972020byassetandindustry.xlsx"
+gfcf_path <- "experimentalregionalgfcf19972020byassetandindustry.xlsx"
 
 gfcf_sheets <- excel_sheets(gfcf_path)
 gfcf_data_sheets <- gfcf_sheets[grepl("[0-9].[0-9]", gfcf_sheets)]
