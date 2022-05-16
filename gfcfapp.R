@@ -59,7 +59,9 @@ server <- function(input, output) {
                 "Date range",
                 min = min,
                 max = max,
-                value = c(min, max)
+                value = c(min, max),
+                step = 365.25,
+                timeFormat = "%Y"
     )
   })
 
