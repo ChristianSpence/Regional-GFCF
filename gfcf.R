@@ -11,7 +11,8 @@ gfcf <- lapply(gfcf_data_sheets, function(sht) {
                      skip = 3,
                      na = c("[w]", "[low]")) |>
     tidyr::pivot_longer(cols = `1997`:`2020`, names_to = "date") |>
-    dplyr::filter(!is.na(Asset)) # Remove empty rows from data sheet 2
+    dplyr::filter(!is.na(Asset)) |> # Remove empty rows from data sheet 2
+    dplyr::mutate(date = as.Date(paste0(date, "-01-01")))
 })
 
 gfcf_final <- lapply(gfcf, function(x) {
@@ -23,3 +24,6 @@ gfcf_final <- lapply(gfcf, function(x) {
     dplyr::rename(geog_name = 2, geog_code = 3)
 }) |>
   dplyr::bind_rows()
+
+# write_csv(gfcf_final, "data/gfcf.csv")
+# saveRDS(gfcf_final, "data/gfcf.rds")
