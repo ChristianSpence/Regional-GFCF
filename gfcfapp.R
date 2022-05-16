@@ -23,7 +23,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  gfcf <- read_csv("gfcf.csv")
+  gfcf <- read_csv("data/gfcf.csv")
 
   output$asset <- renderUI({
     selectInput("asset",
