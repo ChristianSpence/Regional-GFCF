@@ -1,6 +1,5 @@
 library(shiny)
 library(tidyverse)
-library(lubridate)
 
 ui <- fluidPage(
 
@@ -23,7 +22,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  gfcf <- read_csv("data/gfcf.csv")
+  gfcf <- readRDS("data/gfcf.rds")
 
   output$asset <- renderUI({
     selectInput("asset",
@@ -66,8 +65,8 @@ server <- function(input, output) {
 
 
   output$plot <- renderPlot({
-    # req(input$sub_region_1, input$sub_region_2, input$type, input$date)
-    ggplot2::ggplot(gfcf %>%
+    req(input$asset, input$geog_name, input$industry, input$date)
+    ggplot2::ggplot(gfcf |>
                       dplyr::filter(date >= input$date[1],
                                     date <= input$date[2],
                                     `SIC07 industry name` %in% input$industry,
@@ -77,10 +76,11 @@ server <- function(input, output) {
                     ggplot2::aes(x = date, y = value, colour = Asset, linetype = `SIC07 industry name`)) +
       ggplot2::geom_line(size = 1) +
       ggplot2::facet_wrap(~ geog_name) +
-      ggplot2::labs(title = "GFCF",
-                    subtitle = "Experimental statistics",
+      ggplot2::labs(title = "Regional Gross Fixed Capital Formation",
+                    subtitle = "Caution: experimental statistics",
                     x = "",
-                    y = ""
+                    y = "£m, NSA, Current Prices",
+                    caption = "App by @ChristianSpence"
       ) +
       ggplot2::theme(
         panel.background   = ggplot2::element_blank(),
