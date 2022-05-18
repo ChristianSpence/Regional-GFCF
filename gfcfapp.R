@@ -22,12 +22,12 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  gfcf <- readRDS("data/gfcf.rds")
+  gfcf <- readRDS("data/rgfcf.rds")
 
   output$asset <- renderUI({
     selectInput("asset",
                 "Asset Type",
-                choices = unique(gfcf$Asset),
+                choices = unique(gfcf$variable_name),
                 multiple = TRUE,
                 selected = "All assets"
     )
@@ -35,8 +35,8 @@ server <- function(input, output) {
 
   output$geog_name <- renderUI({
     selectInput("geog_name",
-                "Geography Name",
-                choices = unique(gfcf$geog_name),
+                "Geography",
+                choices = unique(gfcf$geography_name),
                 multiple = TRUE,
                 selected = "Greater Manchester"
     )
@@ -45,12 +45,11 @@ server <- function(input, output) {
   output$industry <- renderUI({
     selectInput("industry",
                 "Industry",
-                choices = unique(gfcf$`SIC07 industry name`),
+                choices = unique(gfcf$industry_name),
                 selected = "Total GFCF",
                 multiple = TRUE
     )
   })
-
 
   output$date <- renderUI({
     min = min(gfcf$date)
@@ -60,24 +59,23 @@ server <- function(input, output) {
                 min = min,
                 max = max,
                 value = c(min, max),
-                step = 365.25,
-                timeFormat = "%Y"
+                step = 1,
+                sep = ""
     )
   })
 
-
   output$plot <- renderPlot({
-    req(input$asset, input$geog_name, input$industry, input$date)
+    req(input$asset, input$geog_name,
+        input$industry, input$date)
     ggplot2::ggplot(gfcf |>
                       dplyr::filter(date >= input$date[1],
                                     date <= input$date[2],
-                                    `SIC07 industry name` %in% input$industry,
-                                    geog_name %in% input$geog_name,
-                                    Asset %in% input$asset),
-
-                    ggplot2::aes(x = date, y = value, colour = Asset, linetype = `SIC07 industry name`)) +
+                                    industry_name %in% input$industry,
+                                    geography_name %in% input$geog_name,
+                                    variable_name %in% input$asset),
+                    ggplot2::aes(x = date, y = value, colour = variable_name, linetype = industry_name)) +
       ggplot2::geom_line(size = 1) +
-      ggplot2::facet_wrap(~ geog_name) +
+      ggplot2::facet_wrap(~ geography_name) +
       ggplot2::labs(title = "Regional Gross Fixed Capital Formation",
                     subtitle = "Caution: experimental statistics",
                     x = "",
@@ -93,7 +91,6 @@ server <- function(input, output) {
         axis.line          = ggplot2::element_line(),
         strip.background   = ggplot2::element_blank()
       )
-
   }, height = 600)
 }
 
