@@ -34,9 +34,6 @@ rgfcf <- lapply(rgfcf_data_sheets, function(sht) {
                   .before = geography_name) |>
     dplyr::mutate(variable_unit = "£m NSA Current Prices",
                   variable_code = variable_name) |>
-    dplyr::mutate(industry_type = "SIC2007 Section") |>
-
-    # final tidy - remove duplicates caused by TLZ
-    dplyr::filter(!geography_code == "TLZ")
+    dplyr::mutate(industry_type = "SIC2007 Section")
 }) |>
   dplyr::bind_rows()
